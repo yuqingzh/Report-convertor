@@ -1,0 +1,1178 @@
+===========================================================================================
+Onelog:
+===========================================================================================
+
+
+1.TL9000:
+----------------------------------------------
+	Filtered the record whose ‘Country’ equals PHILIPPINES.
+	Filtered the record whose ‘Customer Name’ contains ALCATEL-LUCENT.
+
+
+	Specially processed field:
+
+	Exp_Part_No: Add ' in the front of the field.
+	Country: Set it to 'TW' if Country field is 'TAIWAN', otherwise copy it the same.
+	RU: Set it per Country name.
+				case "AUSTRALIA":
+				case "NEW ZEALAND":			
+				case "PACIFIC ISLANDS":		
+				case "PAPUA NEW GUINEA":		
+					
+					RU = "ANZ";
+					
+				case "JAPAN":
+				case "KOREA":
+				case "KOREA  REPUBLIC OF":
+				case "KOREA REPUBLIC OF":
+				case "HONG KONG":
+				case "TAIWAN":
+					
+					RU = "NA";
+					
+				case "SINGAPORE":
+				case "MALAYSIA":
+				case "THAILAND":
+				case "INDONESIA":
+				case "BRUNEI DARUSSALAM":
+				case "VIET NAM":
+				case "VIETNAM":
+					
+					RU = "SSEA";
+	
+				Other cases:
+
+					RU = blank.
+
+	WK: Set it manually.
+	Unique Identification: "Rma#" + "\" + "Line#" 	
+	Delivery Status: Set it to 'On Time' if 'In TAT is '1', otherwise set it to 'Past Due'.
+	SLA:
+		a) if "Service_Type" is "AE",
+		
+			//RULE #1
+			Set it to "R4S" if Country is "THAILAND" and Customer contains "TRUE MOVE"
+			
+			//RULE #2
+			Set it to "R4S" if Country is "MALAYSIA" and Customer contains "CELCOM"
+			
+			//RULE #3
+			Set it to "H+" if  Country is "INDONESIA" and 
+			"Site Type" contains "H" or "Ticket_Type" contains "H"
+			
+			//RULE #4
+			Set it to "D+" if  Country is "KOREA  REPUBLIC OF" and "Ticket_Type" is "1D";  
+			Set it to "R4S" if  Country is "KOREA  REPUBLIC OF" and "SiteType" contains "R4R"
+			  
+			//RULE #5
+			For "JAPAN" 
+				Set it to "H+" if"SiteType" contains "H" and Ticket_Type contains "H";	
+				Set it to "H+" if Customer contains "AT&T SPIDER";
+				if Customer contains "NTT PC"
+					set it to "R4S" if Model_Code is "11411B" or "11411" or "11594" or"11075L";
+					otherwise set it to "D+".
+				Set it to "R4S" if Customer contains "SOFTBANK TELECOM (RS&R)";
+				For other cases, set it to blank;
+
+			//RULE #6
+			For "AUSTRALIA"
+				Set it to blank if ticketType is not "1D"
+				otherwise, set it to "D+"
+			
+			//RULE #7
+			Set it to "H+" if "Site Type" contains "H" and ticketType contains "H"				
+
+			//RULE #8
+			Set it to blank for all other cases.
+
+		b) if Service_Type is not "AE",	
+			//RULE #1
+			For JAPAN, and Customer contains "SOFTBANK TELECOM (RS&R)".  Set it to 
+			"R4S" if deliveryStatus is "On Time". ohterwise (past due), set it to "Per Use".
+
+			//RULE #3
+			Set it to "Per Use" if customerType is "RRN" or "AEN"
+				
+			//RULE #3
+			Set it to blank if Country is "AUSTRALIA" and Customer contains "OPTUS" and ticketType is "1D"
+				
+			//RULE #4 default to R4S
+		 	Set it to "R4S" for all other cases.
+
+	Other fields: (Just copy from the input file straightforwardly)
+	
+	dr["Model"] = srcDr["Model"];	
+	dr["Fmr BU"] = srcDr["Fmr BU"];
+	dr["Customer Name"] = srcDr["Customer Name"];	
+	dr["Cust_Type"] = srcDr["Cust_Type"];	
+	dr["SiteType"] = srcDr["SiteType"];	
+	dr["Ticket_Type"] = srcDr["Ticket_Type"];	
+	dr["Service_Type"] = srcDr["Service_Type"];	
+	dr["Warranty_Status"] = srcDr["Warranty_Status"];	
+	dr["Rma#"] = "'" + srcDr["Rma#"];	
+	dr["Line#"] = srcDr["Line#"];	
+	dr["Create_Date"] = srcDr["Create_Date"];	
+	dr["Rcv_Date_Def"] = srcDr["Rcv_Date_Def"];	 
+	dr["Ship_Date_Repl"] = srcDr["Ship_Date_Repl"];	
+	dr["Target Compl Date"] = srcDr["Targe Compl Date"];	
+	dr["TAT"] = srcDr["TAT"];	
+	dr["In TAT"] = srcDr["InTat"];	
+	dr["Repairer"] = srcDr["Repairer"];	
+	dr["Defective TAT"] = srcDr["Defective TAT"]	
+	dr["Repair TAT"] = srcDr["Repair TAT"]	 
+	dr["Order TAT"] = srcDr["Order TAT"];	
+	dr["Despatch Store"] = srcDr["Despatch Store"];	
+	dr["Repair Comments"] = srcDr["Repair Comments"];	
+	dr["Ticket_No"] = "'" + srcDr["Ticket_No"];	
+	dr["RU"] = this.SetRU(srcDr["Country"].ToString());
+	dr["Clarify_Date"] = srcDr["Clarify_Date"];	
+	dr["Clarify_Time"] = srcDr["Clarify_Time"];	
+	dr["Signed_By"] = srcDr["Signed_By"];	
+	dr["Signed_Date"] = srcDr["Signed_Date"];	
+
+
+
+2.TWClose
+----------------------------------------------
+	
+	Filter the records whose 'Sales Orders - ShipTo Customer Name' is "台灣國際標準電子股份有限公司" or "內政部消防署"
+
+	Filter the records that "Target Compl Date" is not in the current week.
+	Note that the following fields should not be empty, otherwise the record would be filtered.
+	["Sales Orders - Order  Reason"] 
+	["IC Delivery Header -  GI Date"]
+	["Sales Orders - Creation Date"]
+
+Specially processed field:
+
+	Target Compl Date:
+		a). If the last letter of "Sales Orders - ShipTo Customer Name4" is 'D', delete it.
+		b). Get the last two letters('D' should have been removed, i.e., the two letters 
+			should not include 'D').
+		c). If the two letters is "NB", than "TO BE ADDED DAYS" is 1. Otherwise it is the 
+			number got from the two letters above.
+		d). If the first two letters of "Sales Orders - ShipTo Customer Name4" is not "AE", the
+			"Target Compl Date" should be set to "IC Delivery Header -  GI Date" + 
+			"TO BE ADDED DAYS" got in step c).
+
+		    Otherwise (R4S), set it to ["Sales Orders - Creation Date"] plus "TO BE ADDED DAYS" 
+			got in step c).
+
+	In TAT:
+		Set it to '1' if "less than Target Compl Date" >= "OC Delivery Header -  GI_Date", otherwise set it to '0'.
+	
+	"RU" = "NA";	
+
+	"Unique Identification" = ["Sales Orders - Sales Order Number"] + "\" + ["Sales Orders Line - LineNumber"] 	
+
+	Delivery Status: 
+		Set it according to In TAT.
+
+	SLA: 
+		Set it to 'D+' if the first two letters of "Sales Orders - ShipTo Customer Name4" is 'AE', otherwise set it to 'R4S'
+
+	Other fields: (Just copy from the input file straightforwardly)
+
+	dr["Exp_Part_No"] = "'" + srcDr["Sales Orders Line - Material"]
+	dr["Model"] = srcDr["Sales Orders Line - Material Description"];	
+	dr["Country"] = "TW";
+	dr["Fmr BU"] = "";	
+	dr["Customer Name"] = srcDr["Sales Orders - ShipTo Customer Name"];	
+	dr["Cust_Type"] = "";	
+	dr["SiteType"] = "";	
+	dr["Ticket_Type"] = "";	
+	dr["Service_Type"] = srcDr["Sales Orders - Order  Reason"];	
+	dr["Warranty_Status"] = "";	
+	dr["Rma#"] = "'" + srcDr["Sales Orders Line - SPT"]
+	dr["Line#"] = srcDr["Sales Orders Line - LineNumber"]	
+	dr["Create_Date"] = srcDr["Sales Orders - Creation Date"];	
+	dr["Rcv_Date_Def"] = srcDr["IC Delivery Header -  GI Date"];	
+	dr["Ship_Date_Repl"] = srcDr["OC Delivery Header -  GI_Date"];	
+
+
+
+3.TWOpen
+----------------------------------------------
+	Filter the records whose 'Sales Orders - ShipTo Customer Name' is "台灣國際標準電子股份有限公司" or "內政部消防署"
+	Filter the records that "Target Compl Date" is not in the current week and the past due interval 
+	which was set in the config form.
+
+	The fields processing are same with that of TWclose except:
+
+		Comments from In-country:
+
+			Set it to (WK + "-open") if "Target Compl Date" is in the current week, 
+			otherwise set it to ("Before" + TW).
+		
+		
+4.KOREA
+----------------------------------------------
+
+	Special processed field:
+		Country:
+			Convert "KOREA" to "KOREA  REPUBLIC OF" if any.		
+		Delivery Status:
+			if Target Compl Date >= Ship_Date_Repl, set it to "On Time", otherwise set it to "Past Due".
+		
+		In TAT: Set it according to Delivery Status.
+
+		SLA:
+			set it to 'R4S' if the first character is 'R' in the input file. For others, leave it with blank.
+
+	Other fields:
+
+	dr["Exp_Part_No"] = "'" + srcDr["Part Number"]
+	dr["Model"] = srcDr["Model"];	
+	dr["Fmr BU"] = srcDr["Fmr BU"];	
+	dr["Customer Name"] = srcDr["Customer Name"];	
+	dr["Cust_Type"] = srcDr["Cust_Type"];	
+	dr["SiteType"] = srcDr["SLA"];	
+	dr["Ticket_Type"] = srcDr["Ticket_Type"];	
+	dr["Service_Type"] = srcDr["Service_Type"];	
+	dr["Warranty_Status"] = srcDr["Warranty_Status"];	
+	dr["Rma#"] = "'" + srcDr["Rma#"]
+	dr["Line#"] = "";	
+	dr["Create_Date"] = srcDr["Create_Date"];	
+	dr["Rcv_Date_Def"] = srcDr["Rcv_Date_Def"];	
+	dr["Ship_Date_Repl"] = srcDr["Ship_Date_Repl"];	
+	dr["Target Compl Date"] = srcDr["Target Compl Date"];	
+	dr["TAT"] = srcDr["TAT"];	
+	dr["Repairer"] = srcDr["Repairer"];	
+	dr["Defective TAT"] = srcDr["Defective TAT"];	
+	dr["Repair TAT"] = srcDr["Repair TAT"];	
+	dr["Order TAT"] = srcDr["Order TAT"];	
+	dr["Despatch Store"] = srcDr["Despatch Store"];	
+	dr["Repair Comments"] = srcDr["Repair Comments"];	
+	dr["Ticket_No"] = "'" + srcDr["Ticket_No"];	
+	dr["RU"] = "NA";	
+	dr["WK"] = "wk" + srcDr["WK"]
+	dr["Unique Identification"] = srcDr["New Serial Number"]; 	
+
+
+===========================================================================================
+NonOnelog:
+===========================================================================================
+
+	Specially processed field:
+	"Target Due Date":
+
+		if "Target Due Date" in source file is empty, set it to "Customer Request Date" plus 1 day. 
+		Otherwise copy it the same from the source file.
+
+	"On Time":
+
+		if "Dispatched Date to Customer" is empty, set it to '0'.
+		then compare the fields of "Target Due Date" and "Dispatched Date to Customer". 
+		set it to '0' if DispatchedDateToCustomer > TargetDueDate, otherwise set it to '1'.
+
+	"Delivery Status":
+
+		set it accordingly based on "On Time" fields just calculated.
+
+	"SLA":
+	
+		set it to "R4S" if "Customer TAT" == "120", otherwise set it to "H+".
+
+	"WK": Set it manually.
+		
+	Other fields:
+
+	dr["Country"] = srcDr["Country"]
+	dr["Product"] = srcDr["Product"]
+	dr["Part Number"] = "'" + srcDr["Part Number"]
+	dr["Description"] = srcDr["Description"]
+	dr["Customer Name"] = srcDr["Customer Name"]	
+	dr["Customer Reference #"] = srcDr["Customer Reference #"]
+	dr["Customer TAT"] = srcDr["Customer TAT"]
+	dr["RMA#"] = "'" + srcDr["RMA#"]
+	dr["Warranty Status_W/OW"] = srcDr["Warranty Status_W/OW"]
+	dr["SPT"]  = srcDr["SPT"]
+	dr["Qty"]  = srcDr["Qty"]
+	dr["Serial No"]  = "'" + srcDr["Serial No"]
+	dr["RSLC/Repairer "]  = srcDr["RSLC/Repairer "]
+	dr["Customer Request Date"]  = srcDr["Customer Request Date"]
+	dr["RMA Request Date*"]  = srcDr["RMA Request Date*"]
+	dr["Faulty Board Received Date from Customer"]  = srcDr["Faulty Board Received Date from Customer"]
+	dr["Ship to RSLC/Repairer Date"]  = srcDr["Ship to RSLC/Repairer Date"]
+	dr["Received Date from RSLC/Repairer"]  = srcDr["Received Date from RSLC/Repairer"]
+	dr["Dispatched Date to Customer"]  = srcDr["Dispatched Date to Customer"]
+	dr["Repairer_RSLC SLA"]  = srcDr["Repairer_RSLC SLA"]
+	dr["Comment from RSLC/Repairer"]  = srcDr["Comment from RSLC/Repairer"]
+	dr["Repair Days Overdue"]  = "";
+	dr["Customer Days Overdue"]  = srcDr["Days Overdue"]	
+	dr["Repair Status"]  = srcDr["Repair Status"]	
+	dr["Customer Status"]  = srcDr["Customer Status"]
+	dr["Repairer Actual TAT"]  = srcDr["Repairer Actual TAT"]
+	dr["Customer Actual TAT"]  = srcDr["Customer Actual TAT"]
+	dr["RSCIC TAT"]	  = srcDr["RSCIC TAT"]
+	dr["RMA Handling TAT"]	  = srcDr["RMA Handling TAT"]
+	dr["Comments / Reason"]  = srcDr["Comments"]
+	
+
+
+
+===========================================================================================
+WeeklyOTD:
+===========================================================================================
+
+Loop each record (by country/customer) in the "Weekly OTD-key customer list" file and perform the two actions below.
+
+1.	Calculate AE.
+
+	1)	If the country we are culculating is "NEW ZEALAND" or "PACIFIC ISLANDS", 
+		a) Calculate 'Due': Count the record by country/customer whose 'SLA' is 'D+' or 'H+' in Non-Onelog sheet.
+		b) Calculate 'On Time": Count the record by country/customer whose 'SLA' is 'D+' or 'H+' 
+					and "Delivery Status" is "On Time" in Non-Onelog sheet.
+	2)	For other countries, loop the Onelog sheet.
+
+		special processing:
+		a) if the customer we are culculating is "CHT" and the record's 
+		   "Customer Name" contains "中華電信", count it. 
+		b) for KT and SK.
+		   Count it to KT if customer name contains "HOLIM TECHNOLOGY" or
+							 "KTF-KTTECH" or
+							 "ORIENT TELECOM" or 
+							 "KT" or
+							 "SUNGHWA TELECOMMUNICATIONS" or 
+							 "KOREA TELECOM"
+
+		   Count it to SK if customer name contains "HANARO TELECOM" or 
+							"SAMHWA TELECOM" or
+							"VINE TELECOM" or 
+							"SANDUEL NETWORKS"
+		   For "LG Nortel", count half of the ontime records and past due records to KT. 
+			The other half count into SK.
+		   For "LG Ericsson" and "LG-ERICSSON", count half of the ontime records and past due records to KT. 
+			The other half count into SK.
+	
+		        Reference:
+
+			//Korea Telecom Codes -- FULL
+			//===================================
+			//(HMT001) HOLIM TECHNOLOGY
+			//(KTF001) KTF-KTTECH
+			//(ORI001) ORIENT TELECOM CO? LTD
+			//KT
+			//(SUN001) SUNGHWA TELECOMMUNICATIONS
+			//(001117) KT CORPORATION
+			//(000627) KOREA TELECOM
+			//	
+			//SK Group Codes -- FULL
+			//==================================
+			//(000712) HANARO TELECOM
+			//(001137) SAMHWA TELECOM INDUSTRY CO LTD
+			//(SMT001) SAMHWA TELECOM
+			//(001260) VINE TELECOM
+			//(SAN001) SANDUEL NETWORKS
+		
+		
+	
+2.	Calculate R4S.
+
+	Use same logic with that of AE calculation except the "SLA" should be replaced with "R4S".
+
+===========================================================================================
+MonthlyOTD:
+===========================================================================================
+
+Same logic with weekly OTD except of the input files.
+
+
+===========================================================================================
+NonDespatch:
+===========================================================================================
+
+Loop the file Input6-NonDesp. For each record:
+
+	1. Filtered the record if 'Customer' contains "ALCATEL-LUCENT AUSTRALIA".
+	2. Filtered the record if Country is "JAPAN" and Ticket_Type is "L".
+	3. Set SLA.
+		a). if "Service Level" is "AE",
+			set 'SLA' to '0' if "Target Compl Date" is blank
+			otherwise, 'SLA' is "Target Compl Date" subtract "Ord Date".
+		b). if  "Service Level" is not "AE",
+			set 'SLA' to '0' if "Target Compl Date" is blank
+			otherwise, 'SLA' is "Target Compl Date" subtract "Def Rec Date".
+
+		note: "Ord Date" and "Def Rec Date" should not be blank if "Target Compl Date" is not blank,
+			otherwise the following message will pop up.
+ 			"Non-Desp: Error Occurred when processing 'SLA' field ".
+
+	4. Set "SLA Definition".
+		a) if "Service Level" is "AE",	
+			//RULE #1
+			Set it to "R4S" if Country is "THAILAND" and Customer contains "TRUE MOVE"
+			
+			//RULE #2
+			Set it to "R4S" if Country is "MALAYSIA" and Customer contains "CELCOM"
+			
+			//RULE #3
+			Set it to "AE" if  Country is "INDONESIA" and 
+			"Site Type" contains "H" or "Ticket_Type" contains "H"
+			
+			//RULE #4
+			Set it to "AE" if  Country is "KOREA  REPUBLIC OF" and "Ticket_Type" is "1D";  
+			Set it to "R4S" if  Country is "KOREA  REPUBLIC OF" and "Site Type" contains "R4R"
+			  
+			//RULE #5
+			For "JAPAN" 
+				Set it to "AE" if"Site Type" contains "H" and ticketType contains "H";	
+				Set it to "AE" if Customer contains "AT&T SPIDER";
+				if Customer contains "NTT PC"
+					set it to "R4S" if Model is "11411B" or "11411" or "11594" or"11075L";
+					otherwise set it to "AE".
+				Set it to "R4S" if Customer contains "SOFTBANK TELECOM (RS&R)";
+				For other cases, set it to blank;
+			
+			//RULE #6
+			For "AUSTRALIA"
+				Set it to blank if ticketType is not "1D"
+				otherwise, set it to "AE"
+
+			//RULE #7
+			Set it to "AE" if "Site Type" contains "H" and ticketType contains "H"	
+
+			//RULE #8
+		 	Set it to blank for all other cases.
+	
+		b) if serviceType is not "AE",	
+			//RULE #1
+			Set it to blank if Country is "AUSTRALIA" and Customer contains "OPTUS" and ticketType is "1D"
+				
+			//RULE #2 default to R4S
+		 	Set it to "R4S" for all other cases.
+			
+
+	5. Set "Overdue Days"
+		a). Set it to "TargetDateNotDefined" if "Target Compl Date" is blank.
+		b). if "Target Compl Date" is not blank.
+			1). Set to this Tuesday subtract "Target Compl Date" 
+			    	if "SLA Definition" is "AE" and "Ord Date" is not blank and "Created On" is blank.
+			2). if "Ord Date" or "Created On" is blank, 
+			    	set it to "Days Open" - "SLA", set it to "NA" if "SLA" >= "Days Open";
+			3). if neither "Ord Date" or "Created On" is blank,
+			    	==>if "SLA Definition" is "AE" and "Ord Date" > "Created On", 
+				   set it to this Tuesday subtract "Target Compl Date"
+			        ==>otherwise, set it to "Days Open" - "SLA", set it to "NA" if "SLA" >= "Days Open";
+	6. Set "Overdue Group"
+		a). Set it to "TargetDateNotDefined" if "Overdue Days" is "TargetDateNotDefined"
+		b). Set it to "NA" if "Overdue Days" is "NA" or "0"
+		c). if "SLA Defination" is "AE",
+			1). Set it to "'1-15" if (15 >= "Overdue Days" > 0)
+			2). Set it to "'16-30" if (30 >= "Overdue Days" > 15)
+			3). Set it to "30+" if if ("Overdue Days" > 30)
+		d). if "SLA Defination" is "R4S",
+			1). Set it to "'1-30" if (30 >= "Overdue Days" > 0)
+			2). Set it to "'31-60" if (60 >= "Overdue Days" > 30)
+			3). Set it to "'61-90" if (90 >= "Overdue Days" > 60)
+			4). Set it to "90+" if ("Overdue Days" > 90)
+				
+	3. Copy the following fields.
+
+		dr["Country"] = srcDr["Country"];
+		dr["Sequence #"] = srcDr["Sequence #"];
+		dr["Ref#1"] = srcDr["Ref#1"];
+		dr["Ref#2"] = srcDr["Ref#2"];
+		dr["Site Type"] = srcDr["Site Type"];
+		dr["Customer"] = srcDr["Customer"];
+		dr["Site No"] = srcDr["Site No"];
+		dr["Fmr Bus Unit"] = srcDr["Fmr Bus Unit"];
+		dr["Part Number"] = srcDr["Part Number"];
+		dr["Model"] = srcDr["Model"];
+		dr["Description"] = srcDr["Description"];
+		dr["Product Type"] = srcDr["Product Type"];
+		dr["Rma No"] = "'" + srcDr["Rma No"];
+		dr["Line No"] = srcDr["Line No"];
+		dr["Service Level"] = srcDr["Service Level"];
+		dr["Cover Type"] = srcDr["Cover Type"];
+		dr["Ticket_Type"] = srcDr["Ticket_Type"];
+		dr["Dispatch Store"] = srcDr["Dispatch Store"];
+		dr["WC Date"] = srcDr["WC Date"];
+		dr["Created On"] = srcDr["Created On"];
+		dr["Ord Date"] = srcDr["Ord Date"];
+		dr["Release Date"] = srcDr["Release Date"];
+		dr["Target Compl Date"] = srcDr["Target Compl Date"];
+		dr["Days Open"] = srcDr["Days Open"];
+		dr["QoH"] = srcDr["QoH"];
+		dr["Order I/p"] = srcDr["Order I/p"];
+		dr["Order B/o"] = srcDr["Order B/o"];
+		dr["Expected Serial Number"] = srcDr["Expected Serial Number"];
+		dr["Received Part Number"] = srcDr["Received Part Number"];
+		dr["Received Serial Number"] = srcDr["Received Serial Number"];
+		dr["Delivery Name"] = srcDr["Delivery Name"];
+		dr["Delivery Address"] = srcDr["Delivery Address"];
+		dr["Delivery Town"] = srcDr["Delivery Town"];
+		dr["Attention Person"] = srcDr["Attention Person"];
+		dr["Current Status"] = srcDr["Current Status"];
+		dr["Call Status"] = srcDr["Call Status"];
+		dr["Def Rec Date"] = srcDr["Def Rec Date"];
+		dr["Workshop"] = srcDr["Workshop"];
+		dr["Repairer Name"] = srcDr["Repairer Name"];
+		dr["Rep RMA"] = srcDr["Rep RMA"];
+		dr["Rep Ref"] = srcDr["Rep Ref"];
+		dr["Desp To Rep"] = srcDr["Desp To Rep"];
+		dr["Rep Status"] = srcDr["Rep Status"];
+		dr["Exp Return"] = srcDr["Exp Return"];
+		dr["Desp From Rep"] = srcDr["Desp From Rep"];
+		dr["Header_Comments"] = srcDr["Header_Comments"];
+		dr["Line_Comments"] = srcDr["Line_Comments"];
+
+
+===========================================================================================
+OpenOrderOnelog:
+===========================================================================================
+
+Loop the file Input7-OpenOrderOnelog. For each record:
+
+	1. Filtered the record whose "RMA_No\Line_No" is in file OpenLogReport_Excluding_List.xls. 
+
+	2. Set Delivery Status.
+		a). Set it to "On Time" if "Overdue" is blank.
+		b). Set it to "Past Due" if "Overdue" > 0.
+		c). Set it to "On Time" for other cases.
+
+	3. Set "SLA Definition".
+		a) if "Service_Level" is "AE",	
+			//RULE #1
+			Set it to "R4S" if Country is "THAILAND" and Customer contains "TRUE MOVE"
+			
+			//RULE #2
+			Set it to "R4S" if Country is "MALAYSIA" and Customer contains "CELCOM"
+			
+			//RULE #3
+			Set it to "AE" if  Country is "INDONESIA" and 
+			"Site Type" contains "H" or "Ticket_Type" contains "H"
+			
+			//RULE #4
+			Set it to "AE" if  Country is "KOREA  REPUBLIC OF" and "Ticket_Type" is "1D";  
+			Set it to "R4S" if  Country is "KOREA  REPUBLIC OF" and "Site_Type" contains "R4R"
+			  
+			//RULE #5
+			For "JAPAN" 
+				Set it to "AE" if"Site_Type" contains "H" and Ticket_Type contains "H";	
+				Set it to "AE" if Customer contains "AT&T SPIDER";
+				if Customer contains "NTT PC"
+					set it to "R4S" if Model_Code is "11411B" or "11411" or "11594" or"11075L";
+					otherwise set it to "AE".
+				Set it to "R4S" if Customer contains "SOFTBANK TELECOM (RS&R)";
+				For other cases, set it to blank;
+			
+			//RULE #6
+			For "AUSTRALIA"
+				Set it to blank if ticketType is not "1D"
+				otherwise, set it to "AE"
+
+			//RULE #7
+			Set it to "AE" if "Site Type" contains "H" and ticketType contains "H"	
+
+			//RULE #8
+		 	Set it to blank for all other cases.
+	
+		b) if Service_Type is not "AE",	
+			//RULE #1
+			Set it to blank if Country is "AUSTRALIA" and Customer contains "OPTUS" and ticketType is "1D"
+				
+			//RULE #2 default to R4S
+		 	Set it to "R4S" for all other cases.
+
+	4. Set "Overdue Group".
+		a). Set it to "NA" if "Overdue Days" is blank or "0"
+		b). if "SLA Defination" is "AE",
+			1). Set it to "'1-15" if (15 >= "Overdue Days" > 0)
+			2). Set it to "'16-30" if (30 >= "Overdue Days" > 15)
+			3). Set it to "30+" if if ("Overdue Days" > 30)
+		c). if "SLA Defination" is "R4S",
+			1). Set it to "'1-30" if (30 >= "Overdue Days" > 0)
+			2). Set it to "'31-60" if (60 >= "Overdue Days" > 30)
+			3). Set it to "'61-90" if (90 >= "Overdue Days" > 60)
+			4). Set it to "90+" if ("Overdue Days" > 90)
+
+	5. Copy other fields.
+
+		dr["Rcvd_Part_No"] = "'" + srcDr["Rcvd_Part_No"];	
+		dr["Model_Code"] = srcDr["Model_Code"];	
+		dr["Country"] = srcDr["Country"];	
+		dr["Customer_Name"] = srcDr["Customer_Name"];	
+		dr["cust_type"] = srcDr["cust_type"];	
+		dr["Site_Type"] = srcDr["Site_Type"];	
+		dr["Warranty_Status"] = srcDr["Warranty_Status"];	
+		dr["RMA_No"] = "'" + srcDr["RMA_No"];	
+		dr["Line_No"] = srcDr["Line_No"];	
+		dr["Ticket_Type"] = srcDr["Ticket_Type"];	
+		dr["Service_Level"] = srcDr["Service_Level"];	
+		dr["Repairer_Name"] = srcDr["Repairer_Name"];	
+		dr["Rcvd_Serial_No"] = "'" + srcDr["Rcvd_Serial_No"];	
+		dr["Created_On"] = srcDr["Created_On"];	
+		dr["Order_Date"] = srcDr["Order_Date"];	
+		dr["Target_Compl_Date"] = srcDr["Target_Compl_Date"];	
+		dr["Comments_About_Parts_Used"] = srcDr["Comments_About_Parts_Used"];	
+		dr["Workshop"] = srcDr["Workshop"];	
+		dr["Repair_Code"] = srcDr["Repair_Code"];	
+		dr["Current_Repair_Status"] = srcDr["Current_Repair_Status"];	
+		dr["Fault_Text"] = srcDr["Fault_Text"];	
+		dr["Rcvd_Date_From_Rep"] = srcDr["Rcvd_Date_From_Rep"];	
+		dr["Repairer_Ref"] = srcDr["Repairer_Ref"];	
+		dr["Current_Status"] = srcDr["Current_Status"];	
+		dr["Current_Repair_Status"] = srcDr["Current_Repair_Status"];	
+		dr["Repair_Rma_No"] = srcDr["Repair_Rma_No"];	
+		dr["Current_Repair_Status_Date"] = srcDr["Current_Repair_Status_Date"];	
+		dr["Repair_Comment_Code"] = srcDr["Repair_Comment_Code"];	
+		dr["Repair_Comment_Desc"] = srcDr["Repair_Comment_Desc"];	
+		dr["Latest_Rst_Date"] = srcDr["Latest_Rst_Date"];	
+		dr["Exp_Return_Date"] = srcDr["Exp_Return_Date"];	
+		dr["Identification"] = srcDr["RMA_No"] + "\\" + srcDr["Line_No"]; 	
+	
+
+===========================================================================================
+OpenOrderNonOnelog:
+===========================================================================================
+
+Loop the file Input8-OpenOrderNonOnelog. For each record:
+
+	1. Set "Target Due Date".
+		a). If "Target Due Date" in input file is not blank, just copy it.
+		b). If "Target Due Date" in input file is blank. 
+			"Target Due Date" = "Faulty Board Received Date from Customer" + "Customer TAT".
+
+			Note that an error message dialog will pup up if "Faulty Board Received Date from Customer" 
+			or "Customer TAT". Say, "OpenOrderNonOnelog: Error Occurred when processing 
+			'Target Due Date' field ".
+	2. Set SLA.
+		a). Set it to "R4S" if "Customer TAT" is "120".
+		b). Set it to "AE" for other cases.
+
+	3. Set "Overdue". 
+		"Overdue" = Today subtract "Target Due Date".
+
+	4. Set "Delivery Status".
+		a). Set it to "On Time" if "Overdue" is blank.
+		b). Set it to "Past Due" if "Overdue" > 0.
+		c). Set it to "On Time" for other cases.
+
+	5. Set "Overdue Group".
+		a). Set it to "NA" if "Overdue Days" is blank or equal or less than "0"
+		b). if "SLA Defination" is "AE",
+			1). Set it to "'1-15" if (15 >= "Overdue Days" > 0)
+			2). Set it to "'16-30" if (30 >= "Overdue Days" > 15)
+			3). Set it to "30+" if if ("Overdue Days" > 30)
+		c). if "SLA Defination" is "R4S",
+			1). Set it to "'1-30" if (30 >= "Overdue Days" > 0)
+			2). Set it to "'31-60" if (60 >= "Overdue Days" > 30)
+			3). Set it to "'61-90" if (90 >= "Overdue Days" > 60)
+			4). Set it to "90+" if ("Overdue Days" > 90)
+	
+	6. Copy other fields.
+
+		dr["Product"] = "'" + srcDr["Product"];
+		dr["Part Number"] = "'" + srcDr["Part Number"];
+		dr["Description"] = srcDr["Description"];
+		dr["Country"] = srcDr["Country"];
+		dr["Customer Name"] = srcDr["Customer Name"];	
+		dr["Customer Reference #"] = srcDr["Customer Reference #"];
+		dr["Customer TAT"] = srcDr["Customer TAT"];
+		dr["RMA#"] = "'" + srcDr["RMA#"];
+		dr["Warranty Status_W/OW"] = srcDr["Warranty Status_W/OW"];
+		dr["SPT"]  = srcDr["SPT"];
+		dr["Qty"]  = srcDr["Qty"];
+		dr["Serial No"]  = "'" + srcDr["Serial No"];
+		dr["RSLC/Repairer "]  = srcDr["RSLC/Repairer "];
+		dr["Customer Request Date"]  = srcDr["Customer Request Date"];
+		dr["RMA Request Date*"]  = srcDr["RMA Request Date*"];
+		dr["Faulty Board Received Date from Customer"]  = srcDr["Faulty Board Received Date from Customer"];
+		dr["Ship to RSLC/Repairer Date"]  = srcDr["Ship to RSLC/Repairer Date"];
+		dr["Received Date from RSLC/Repairer"]  = srcDr["Received Date from RSLC/Repairer"];
+		dr["Dispatched Date to Customer"]  = srcDr["Dispatched Date to Customer"];
+		dr["Repairer_RSLC SLA"]  = srcDr["Repairer_RSLC SLA"];
+		dr["Comment from RSLC/Repairer"]  = srcDr["Comment from RSLC/Repairer"];
+		dr["Repair Days Overdue"]  = "";
+		dr["Repair Status"]  = srcDr["Repair Status"];	
+		dr["Customer Status"]  = srcDr["Customer Status"];
+		dr["Repairer Actual TAT"]  = srcDr["Repairer Actual TAT"];
+		dr["Customer Actual TAT"]  = srcDr["Customer Actual TAT"];
+		
+		dr["RSCIC TAT"]  = srcDr["RSCIC TAT"];
+		dr["RMA Handling TAT"]  = srcDr["RMA Handling TAT"];
+
+
+===========================================================================================
+Closed RMA:
+===========================================================================================
+
+Loop the file Input8-OpenOrderNonOnelog. For each record:
+
+	[1]. Edit ASB data.
+
+		Loop file ClosedRMA-ASB. For each record,
+
+		1). Filter the record if 
+				"Leave SHA airport date" is blank or
+				"Country" is "TAIWAN" or "NEW ZEALAND" or "PHILIPPINES".   
+
+		2). Filter the record if "Leave SHA airport date" is not in the time slot that we are using.
+
+		3). Filter the record if "Received P/N" is blank.
+
+		4). Lookup VC file Per "repairer sub-group"(RLC-ASB) and "Received P/N"(ID).
+
+			See general VC file looking up procedure in later section.
+
+		5) Following fields would be used for later counting.
+			
+		destDR["Country"] = dr["Country"];
+		destDR["Leave SHA airport date"] = dr["Leave SHA airport date"];
+		destDR["Received P/N"] = dr["Received P/N"];
+		destDR["repairer sub-group"] = "RLC-ASB";;
+		destDR["Repair cost"] = RFR60; (just searched)
+
+	[2]. Edit TW data.
+
+		Loop file "ClosedRMA-eSpares TW". For each record,
+
+		1). If "IR Delivery Header - Vendor Name" contains‘TAISEL TAIPEI VERIFY CENTER’and "Work Orders  Line - Repair Code" contains "TOK", 
+			the line should be kept. Otherwise, filter the records whose "IR Delivery Header - Vendor Name" can be found in file "Excluding List TW.xsl"
+
+		2). If "IR Delivery Header - Vendor Name" contains 堡華工業 BOA HWA, go to check the column “IR Delivery Line - Rcvd Material”, if the value is 9 digit numbers, filter the line.
+		
+		3). Filter the records whose 'Sales Orders - ShipTo Customer Name' is "台灣國際標準電子股份有限公司" or "內政部消防署"
+
+		4). Filter the record whose "IR Delivery Header -  GI Date" is blank.
+
+		5). Filter the record if "IR Delivery Header -  GI Date" is not in the time slot that we are using.
+
+		6). Filter the records whose "IR Delivery Line - Rcvd Material" is blank.
+
+		7). Determine "repairer sub-group" for this record by look up "Repairer" in file 
+			"TW_repairer subgroup mapping list"..
+
+		8). Look up VC file to get Repair cost per "IR Delivery Line - Rcvd Material"(ID) and "repairer Sub-group". 
+			See general VC file looking up procedure in later section.
+
+			Set it to NFF if "Work Orders  Line - Repair Code" contains "NTF" or "TOK"
+			otherwise set it to RFR60.
+				
+		9). Following fields would be used for later counting.
+
+			destDR["Country"] = "Taiwan";
+			destDR["IR Delivery Header - Vendor Name"] = dr["IR Delivery Header - Vendor Name"];
+			destDR["IR Delivery Line - Rcvd Material"] = dr["IR Delivery Line - Rcvd Material"];
+			destDR["IR Delivery Header -  GI Date"] = dr["IR Delivery Header -  GI Date"];
+			destDR["Work Orders  Line - Repair Code"] = dr["Work Orders  Line - Repair Code"];
+			destDR["repairer sub-group"] = dr["repairer sub-group"];
+			destDR["Repair cost"] = dr["Repair cost"];
+
+
+	[3]. Edit Citadel data.
+
+		Loop file "ClosedRMA-Citadel Report". For each record,
+
+		1). Filter the records whose "Repairer" contains "Alcatel Cit" or "CHSH1R" or "CHSOLR"
+
+		2). Filter the records whose "Country" contains "TAIWAN" or "NEW ZEALAND" or "PHILIPPINES".
+
+		3). Determine "repairer sub-group" for this record per "Repairer".
+
+			a). Set it to "N/A" if "Repairer" is blank.
+			b). Set it to "RLC-Ormes" if "Repairer" contains "alcatel cit" (character case insensitive).
+			c). Set it to "RLC-India" if the first 6 letters of "Repairer" contains "INGURR".
+			d). Set it to "RLC-LVL" if the first 6 letters of "Repairer" contains "USLOUR".
+			e). Set it to "RLC-QD" if the first 6 letters of "Repairer" contains "CHLU2R".
+			f). Set it to "RLC-ASB" if the first 6 letters of "Repairer" contains "CHSH1R" or "CHSOLR".
+			g). Get the first 2 letters of "Repairer" and look it up in file "APAC Country Code List".  
+				Set it to "3rd party within AP" if found, otherwise set it to "3rd party outside of AP".
+
+		4). Look up VC file to get Repair cost per "Rcv_Pno"(ID) and "repairer Sub-group". 
+			
+			See general VC file looking up procedure in later section.
+
+			Set it to NFF if "Work Orders  Line - Repair Code" contains "NTF" or "TOK"
+			otherwise set it to RFR60.
+
+		5). If not found, look up VC file again per "Rcv_Model"(ID) and "repairer Sub-group". 
+			
+			See general VC file looking up procedure in later section.
+
+			Set it to NFF if "Work Orders  Line - Repair Code" contains "NTF" or "TOK"
+			otherwise set it to RFR60.
+
+		6) Following fields would be used for later counting.
+
+			destDR["Country"] = dr["Country"];
+			destDR["Rcv_Pno"] = dr["Rcv_Pno"];
+			destDR["Rcv_Model"] = dr["Rcv_Model"];
+			destDR["Repair_Code"] = dr["Repair_Code"];
+			destDR["Repairer"] = dr["Repairer"];
+			destDR["repairer sub-group"] = dr["repairer sub-group"];
+			destDR["Repair cost"] = dr["Repair cost"];
+
+
+	[4]. Edit Ormes data.
+
+		Loop file "ClosedRMA-Ormes". For each record,
+
+		1). Filter the records whose "OC_GI_Date" is blank.
+
+		2). Filter the records whose "Cust_Country" contains "TAIWAN" or "NEW ZEALAND" or "PHILIPPINES".
+
+		3). Filter the record if "OC_GI_Date" is not in the time slot that we are using.
+
+		4). Lookup VC file per "repairer sub-group"(RLC-Ormes) and "ITEM_FRU"(ID).
+
+			See general VC file looking up procedure in later section.
+
+			dr["Repair cost"] = RFR60;
+
+		5). Following fields would be used for later counting.
+
+			destDR["CUST_Country"] = dr["CUST_Country"];
+			destDR["OC_GI_Date"] = dr["OC_GI_Date"];
+			destDR["ITEM_FRU"] = dr["ITEM_FRU"];
+			destDR["repairer sub-group"] = "RLC-Ormes";
+			destDR["Repair cost"] = RFR60;
+
+
+	[5]. Edit NZ data.
+
+		Loop file "ClosedRMA-NZ". For each record,
+
+		1). Determine "repairer sub-group" for this record per "Repairer1", "Repairer2 and "RMA1".
+
+			a). If "RMA1" contains "test"(character case insensitive), "Repairer2" will be used 
+				as Repairer to apply the following rules. Otherwise, "Repairer1" will be used. 
+			b). Set it to "3rd party within AP" if Repairer is blank.
+			c). Set it to "RLC-LVL" if repairer contains "ALCATEL-LUCENT LOUISVILLE".
+			d). Set it to "RLC-Ormes" if repairer contains "ALCATEL-LUCENT FRANCE".
+			e). Set it to "3rd party within AP" if repairer contains "ALCATEL-LUCENT NZ".
+			f). Set it to "RLC-ASB" if repairer contains "ALCATEL-LUCENT SHANGHAI BELL".
+			g). Set it to "RLC-QD" if repairer contains "ALCATEL-LUCENT QINGDAO".
+			h). For other cases, look up "Repairer" in file "NZ_Country To SubGroup Mapping List" per "Country". 
+
+		5). Look up VC file again per "Manufacturers PartNo"(ID) and "repairer Sub-group". 
+			
+			See general VC file looking up procedure in later section.
+
+			dr["Repair cost"] = RFR60;	
+
+		3) Following fields would be used for later counting.
+
+			destDR["Country"] = "New Zealand";
+			destDR["Manufacturers PartNo"] = dr["Manufacturers PartNo"];
+			destDR["ExtRep"] = dr["ExtRep"];
+			destDR["RMA1"] = dr["RMA1"];
+			destDR["Repairer1"] = dr["Repairer1"];
+			destDR["Repairer2"] = dr["Repairer2"];
+			destDR["repairer sub-group"] = dr["repairer sub-group"];
+			destDR["Repair cost"] = RFR60;
+
+	[6] Summarize the quantity and cost by country based on above output.
+
+	//**************************************//
+	//**** General VC Look Up Procedure ****//
+	//**************************************//
+
+		1). Repairer is "RLC-ASB":
+
+			a). Lookup file "VC Catalogue - RESO China (SHA)" and get  
+			    "VC_RFR60" by trying below approach one by one. Go to step b) if not found.
+
+				1. "Received P/N"(input file) = "RES_IDENTIFIER"(VC file) 	
+				2. "CISCO" + "Received P/N"  = "RES_IDENTIFIER"(VC file)
+				3. "Received P/N" is a sub-string of "PART_NUMBER"(VC file)
+				4. "Received P/N" is a sub-string of "RES_IDENTIFIER"
+				5. "RES_IDENTIFIER" is a sub-string of "Received P/N"
+				6. "PART_NUMBER" is a sub-string of "Received P/N"
+
+			b). Re-Lookup in QD VC file - "VC Catalogue - RESO APAC CHINA QD" and  
+			    "ITP_RFR_60" by trying below approach one by one. Go to step c) if not found.
+
+				1. "Received P/N"(input file) = "RES_IDENTIFIER"(VC file) 	
+				2. "CISCO" + "Received P/N"  = "RES_IDENTIFIER"(VC file)
+				3. "Received P/N" is a sub-string of "RES_IDENTIFIER"
+				4. "RES_IDENTIFIER" is a sub-string of "Received P/N"
+
+			c). If not found, set RFR60 = "215";
+
+		
+		2). Repairer is "RLC-India":
+
+			a). Lookup file "VC Catalogue - RESO APAC INDIA" and get  
+			    "VC NFF", and "VC_RFR_60" by trying below approach one by one. Go to step b) if not found.
+
+				1. ID (input file) = "RES_ID"(VC file) 	
+				2. "CISCO" + ID  = "RES_ID"
+				3. ID is a sub-string of "RES_ID"
+				4. "RES_ID" is a sub-string of ID
+
+			b). If not found, set NFF = "215" and RFR60 = "215";
+				
+
+		3). Repairer is "RLC-QD":
+
+			a). Lookup file "VC Catalogue - RESO APAC CHINA QD" and get  
+			    "ITP_NFF", and "ITP_RFR_60" by trying below approach one by one. Go to step b) if not found.
+
+				1. ID (input file) = "RES_IDENTIFIER"(VC file) 	
+				2. "CISCO" + ID  = "RES_IDENTIFIER"
+				3. ID is a sub-string of "RES_IDENTIFIER"
+				4. "RES_IDENTIFIER" is a sub-string of ID
+
+			b). If not found, set NFF = "215" and RFR60 = "215";
+
+		4). Repairer is "RLC-LVL":
+
+			a). Lookup file "VC Catalogue - RESO AMERICAS NAR" and get  
+			    "VC_NFF", and "VC_RFR_60" by trying below approach one by one. Go to step b) if not found.
+
+				1. ID (input file) = "RES_IDENTIFIER"(VC file) 	
+				2. "CISCO" + ID  = "RES_IDENTIFIER"
+				3. Look up the ID in file "Stinger product code mapping list". If the ID is euqal to any
+				   of the three fields of "Rcv_Pno", "Rcv_Model" and "trim pn", use the three fields as ID
+				   to re-look up the VC file "VC Catalogue - RESO AMERICAS NAR". 
+				4. ID is a sub-string of "RES_IDENTIFIER"
+				5. "RES_IDENTIFIER" is a sub-string of ID
+
+			b). If not found, set NFF = "215" and RFR60 = "215";
+
+		5). Repairer is "RLC-Ormes":
+
+			a). If country is "THAILAND" or "INDONESIA",
+			    Lookup "VC_APAC FCA" sheet of file "VC Catalogue - RESO APAC EMEA" and get  
+			    "VC_RFR_NFF", and "VC_RFR" by trying below approach one by one. Go to step b) if not found.
+
+				1. ID (input file) = "RES_IDENTIFIER"(VC file) 	
+				2. "CISCO" + ID  = "RES_IDENTIFIER"
+				3. ID is a sub-string of "RES_IDENTIFIER"
+				4. "RES_IDENTIFIER" is a sub-string of ID
+
+			b). If not found, set NFF = "215" and RFR60 = "215";
+
+			c). For other countries, 
+			    Lookup "VC_APAC" sheet of file "VC Catalogue - RESO APAC EMEA" and get  
+			    "VC_RFR_NFF", and "VC_RFR" by trying below approach one by one. Go to step d) if not found.
+
+				1. ID (input file) = "RES_IDENTIFIER"(VC file) 	
+				2. "CISCO" + ID  = "RES_IDENTIFIER"
+				3. ID is a sub-string of "RES_IDENTIFIER"
+				4. "RES_IDENTIFIER" is a sub-string of ID
+
+			d). If not found, set NFF = "215" and RFR60 = "215";
+
+
+===========================================================================================
+ActivityYTDBasedOnOTD:
+===========================================================================================
+
+	Note: YTD activity report (OTD based), need the calendar selection to align with 
+		the business month of the OTD report.
+
+	[1]. Count the number for OTD Onelog by country by customer (Loop "OTD-Onelog").
+
+		1). Filter the record if customer contains "台灣國際標準電子股份有限公司", "內政部消防署" or "ALCATEL"
+
+		2). "Target Compl Date" should not be blank. Otherwise the record will be excluded. 
+
+		3). Filter the record if "Target Compl Date" is not in the interval that we plan to count.
+
+		4). Count "DUE" if "Target Compl Date" is in the interval that we plan to count..
+
+		5). Count "ON-TIME" number if "Delivery Status" is "On Time".
+
+		6). count "DISPATCHED" if "Ship_Date_Repl" is not blank.
+
+		7). Accumulate "TAT".
+
+			If "SLA" is "D+" or "H+", to be added "TAT" is "Ship_Date_Repl" substract "Create_Date";
+			If "SLA" is "R4S", to be added "TAT" is "Ship_Date_Repl" substract "Rcv_Date_Def";
+
+			Note that "TAT" would not be counted for this record if the date used is blank.
+
+	[2]. Count the number for OTD NonOnelog by country by customer (Loop "OTD-NonOnelog").
+
+		1). Filter the record if customer contains "台灣國際標準電子股份有限公司", "內政部消防署" or "ALCATEL"
+
+		2). "Target Due Date" should not be blank. Otherwise the record will be excluded. 
+
+		3). Filter the record if "Target Due Date" is not in the interval that we plan to count.
+
+		4). Count "DUE" if "Target Due Date" is in the interval that we plan to count..
+
+		5). Count "ON-TIME" number if "Delivery Status" is "On Time".
+
+		6). count "DISPATCHED" if "Dispatched Date to Customer" is not blank.
+
+		7). Accumulate "TAT".
+
+			If "SLA" is "D+" or "H+", to be added "TAT" is 
+				"Dispatched Date to Customer" substract "Customer Request Date";
+			If "SLA" is "R4S", to be added "TAT" is 
+				"Dispatched Date to Customer" substract "Faulty Board Received Date from Customer";
+
+			Note that "TAT" would not be counted for this record if the date used is blank.
+
+		-----------------------------------------------------------------------
+		| AverageTATOverall = tat/dispatch, set it to 'NA' if dispatch is 0.  |
+		| OTS = onTime/due, set it to 'NA' if due is 0.			      |
+		-----------------------------------------------------------------------
+
+
+===========================================================================================
+ActivityYTD:
+===========================================================================================
+
+	[1]. Set TW Data
+
+		1). Collect all the customer names from the input files of "TW-IC-YTD" ("Sales Orders - ShipTo Customer Name") 
+			and "OTD-Onelog-TWOnly-YTD"("Customer Name" column).
+
+		    Filter the record if customer contains "台灣國際標準電子股份有限公司", "內政部消防署" or "ALCATEL"
+
+		2). Count "RECEIPT"
+
+			Loop "TW-IC-YTD" file By Country (TW) by Customer.  Filter the record if 
+			"IC Delivery Header -  GI Date" is not in the interval that we plan to count. 
+			Otherwise, count "RECEIPT".
+		
+		3). Count "DISPATCH", "DISPATCH WITHIN SLA" and "TAT"
+
+			a). Loop "OTD-Onelog-TWOnly-YTD" file By Country (TW) by Customer.  
+
+			b). Filter the record if "Ship_Date_Repl" is not in the interval that we plan to count. 
+
+			c). Otherwise, count "DISPATCH".
+
+			d). Count "DISPATCH WITHIN SLA" if "Delivery Status" is "On Time" and "Ship_Date_Repl" is not blank.
+
+			e). Accumulate "TAT".
+
+				If "SLA" is "D+" or "H+", to be added "TAT" is "Ship_Date_Repl" substract "Create_Date";
+				If "SLA" is "R4S", to be added "TAT" is "Ship_Date_Repl" substract "Rcv_Date_Def";
+
+				Note that "TAT" would not be counted for this record if the date used is blank.
+
+	[2]. Set Korea Data
+
+		1). Collect all the customer names from the input files of 
+			"KOREA-YTD-Base on RMA creation date" ("Customer Name" column).
+			"KOREA-YTD-Base on shipping date"("Customer Name" column).
+			"CitadelReceived-YTD"("Customer Name" column, "Country" = "Korea Republic Of")
+			"CitadelShipped-YTD"("Customer Name" column", "Country" = "Korea Republic Of")
+
+		    Filter the record if customer contains "台灣國際標準電子股份有限公司", "內政部消防署" or "ALCATEL"
+
+		2). Count "RECEIPT"
+
+			Loop "KOREA-YTD-Base on RMA creation date" file by Customer.  Filter the record if 
+			"Create_Date" is not in the interval that we plan to count. 
+			Otherwise, count "RECEIPT".
+		
+		3). Count "DISPATCH", "DISPATCH WITHIN SLA" and "TAT"
+
+			a). Loop "KOREA-YTD-Base on shipping date" file by Customer.  
+
+			b). Filter the record if "Ship_Date_Repl" is not in the interval that we plan to count. 
+
+			c). Otherwise, count "DISPATCH".
+
+			d). Count "DISPATCH WITHIN SLA" if "Delivery Status" is "On Time" and "Ship_Date_Repl" is not blank.
+
+			e). Accumulate "TAT".
+
+				To be added "TAT" is "Ship_Date_Repl" substract "Create_Date";
+
+				Note that "TAT" would not be counted for this record if the date used is blank.
+
+
+	[3]. Set NZ Data
+
+		1). Collect all the customer names from the input files of "NZ-YTD" ("Customer Name")
+			and "NZ-Received-YTD"("Cust Name" column).
+
+		    Filter the record if customer contains "台灣國際標準電子股份有限公司", "內政部消防署" or "ALCATEL"
+
+		2). Count "RECEIPT"
+
+			Loop "NZ-Received-YTD" file by Customer.  Filter the record if 
+			"Received" is not in the interval that we plan to count. 
+			Otherwise, count "RECEIPT".
+		
+		3). Count "DISPATCH", "DISPATCH WITHIN SLA" and "TAT"
+
+			a). Loop "NZ-YTD" file by Country (NEW ZEALAND) by Customer.  
+
+			b). Filter the record if "Dispatched Date to Customer" is not in the interval that we plan to count. 
+
+			c). Otherwise, count "DISPATCH".
+
+			d). Count "DISPATCH WITHIN SLA" if "Target Due Date" is equal or greater than
+				"Dispatched Date to Customer"
+
+				Note that "DISPATCH WITHIN SLA" would not be counted for this record if the date used is blank.
+
+			e). Accumulate "TAT".
+
+				If "Customer TAT" is "120", to be added "TAT" is "Dispatched Date to Customer" substract Faulty Board Received Date from Customer";
+				If "Customer TAT" is "1", to be added "TAT" is "Dispatched Date to Customer" substract "Customer Request Date";
+
+				Note that "TAT" would not be counted for this record if the date used is blank.
+
+	[4]. Set Citadel Data
+
+		1). Collect all the Country names from the input files of "CitadelReceived-YTD" and "CitadelShipped-YTD"
+		    exclude the countries of "Korea Republic Of", "TW", "Taiwan", "NEW ZEALAND" which has been counted before.
+
+		2). Collect all the customer names for each country from the input files of 
+		    "CitadelReceived-YTD" and CitadelShipped-YTD"
+
+		    Filter the record if customer contains "台灣國際標準電子股份有限公司", "內政部消防署" or "ALCATEL"
+
+		3). Count "RECEIPT"
+
+			Loop "CitadelReceived-YTD" file by "Country" by "Customer_Name".  Filter the record if 
+			"Rcv_Date_Def" is not in the interval that we plan to count. 
+			Otherwise, count "RECEIPT".
+		
+		
+			
+		3). Count "DISPATCH", "DISPATCH WITHIN SLA" and "TAT"
+
+			a). Loop "CitadelShipped-YTD" file by "Country" by "Customer_Name". 
+
+			b). Filter the record if "Ship_Date_Repl" is not in the interval that we plan to count. 
+
+			c). Otherwise, count "DISPATCH".
+
+			d). Calculate Target_Compl_Date 
+
+				1. If "Service_Type" contains "AE"
+
+					(*). Look up "Ticket_Type_Sla ALu_for Citadel" to find the record with 
+					     "Ticket_Type" contains '(Id)' or 'Description' column  
+		
+					(*). Set "Target_Compl_Date" to "Create_Date" add "Response" field of 
+					     the record just got.
+
+				2. If "Service_Type" contains "R4"
+
+					(*). Look up "Ticket_Type_Sla ALu_for Citadel" to find the record with 
+					     "Ticket_Type" contains '(Id)' or 'Description' column  
+		
+					(*). if "Rcv_Date_Def" is not blank, Set "Target_Compl_Date" to "Rcv_Date_Def" 
+						add "Response" field of the record just got.
+					(*). otherwise set "Target_Compl_Date" to "Create_Date" add "Response" field 
+						of the record just got.
+
+			d). Count "DISPATCH WITHIN SLA" if Target_Compl_Date >= "Ship_Date_Repl"
+
+			e). Accumulate "TAT".
+
+				If "Rcv_Date_Def" is not blank, to be added "TAT" is "Ship_Date_Repl" substract "Rcv_Date_Def";
+				Otherwise, to be added "TAT" is "Ship_Date_Repl" substract "Create_Date";
+
+				Note that "TAT" would not be counted for this record if the date used is blank.
+
+
+
+
+		-----------------------------------------------------------------------
+		| AverageTATOverall = tat/dispatch, set it to 'NA' if dispatch is 0.  |
+		| OTS = dispatchWithinSLA/dispatch, set it to 'NA' if dispatch is 0.  |
+		-----------------------------------------------------------------------
