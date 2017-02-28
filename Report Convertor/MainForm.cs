@@ -47,17 +47,29 @@ namespace Report_Convertor
 			
 			Input.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			Input.ControlBox = false;
-			Input.Show();
 			
 			Output.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			Output.ControlBox = false;
-			Output.Show(); 		
 			
 			Config = new frmConfig();
 			Config.Owner = this;
 			Config.ControlBox = false;
 			Config.ShowDialog();
 
+			if (frmInput.cbClosedRMAReportChecked ||
+				frmInput.cbMonthlyOTDAnalysisChecked ||
+				frmInput.cbNonDespReportChecked ||
+				frmInput.cbOpenOrderReportChecked ||
+				frmInput.cbWeeklyOTDAnalysisChecked ||
+				frmInput.cbMonthlyOTDAnalysisChecked ||
+				frmInput.cbOTDReportChecked ||
+				frmInput.cbActivityYTDChecked ||
+				frmInput.cbOTDvsCockpitChecked )
+			{
+				Input.Show();
+				Output.Show();				
+			}
+			
 			this.UpdateMenu();
 			this.UpdateTab();
 		}
@@ -793,6 +805,64 @@ namespace Report_Convertor
 			Output.tcOutput.SelectTab(Output.tpWeeklyActivityAE);
 			this.Cursor   =   Cursors.Default;	
 			
+		}
+		
+		
+		void BPOPortionToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			frmBPO bpo = new frmBPO(this);
+			//bpo.Owner = this;
+			bpo.Show();
+			
+		}
+		
+		void InvoicePortionToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			frmInvoice invoice = new frmInvoice(this);
+			//invoice.Owner = this;
+			invoice.Show();
+			
+		}
+		
+		void SummaryToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			frmSummary summary = new frmSummary(this);
+			//summary.Owner = this;
+			summary.Show();
+			
+		}
+		
+		void ExportToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			try
+			{
+				bool ret;
+				string outputFilePath = System.Environment.CurrentDirectory + "\\Data\\BPO\\Summary-" + 
+											DateTime.Now.ToShortDateString() + ".xls";
+				
+				if (File.Exists(outputFilePath))
+                {                      
+                    File.Delete(outputFilePath);
+                } 
+
+				DataSet2WorkBook dataSet2WorkBook = new DataSet2WorkBook(ref frmSummary.ds, outputFilePath);
+				this.Cursor = Cursors.WaitCursor;
+				ret = dataSet2WorkBook.ConvertAll();
+				this.Cursor = Cursors.Default;
+			
+				if (ret == true)
+				{
+					MessageBox.Show("Completed successfully!");
+				}
+				else{
+					MessageBox.Show("Error occurred! Contact your husband ;-)");
+				}
+			
+			}
+			catch
+			{
+				MessageBox.Show("Error occurred! Restart the application and try again!");
+			}
 		}
 	}
 }

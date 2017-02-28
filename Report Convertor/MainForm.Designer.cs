@@ -74,9 +74,16 @@ namespace Report_Convertor
 			this.WeeklyActivityReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.CockpitVsOTDMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.nZPOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.bPOPortionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.invoicePortionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+			this.summaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -85,6 +92,7 @@ namespace Report_Convertor
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.fileToolStripMenuItem,
 									this.operationToolStripMenuItem,
+									this.nZPOToolStripMenuItem,
 									this.aboutToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -374,6 +382,45 @@ namespace Report_Convertor
 			this.CockpitVsOTDMenuItem.Text = "CockpitVsOTD";
 			this.CockpitVsOTDMenuItem.Click += new System.EventHandler(this.CockpitVsOTDMenuItemClick);
 			// 
+			// nZPOToolStripMenuItem
+			// 
+			this.nZPOToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.bPOPortionToolStripMenuItem,
+									this.invoicePortionToolStripMenuItem,
+									this.toolStripSeparator9,
+									this.summaryToolStripMenuItem,
+									this.toolStripSeparator10,
+									this.exportToolStripMenuItem});
+			this.nZPOToolStripMenuItem.Name = "nZPOToolStripMenuItem";
+			this.nZPOToolStripMenuItem.Size = new System.Drawing.Size(54, 21);
+			this.nZPOToolStripMenuItem.Text = "NZPO";
+			// 
+			// bPOPortionToolStripMenuItem
+			// 
+			this.bPOPortionToolStripMenuItem.Name = "bPOPortionToolStripMenuItem";
+			this.bPOPortionToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.bPOPortionToolStripMenuItem.Text = "BPO Portion";
+			this.bPOPortionToolStripMenuItem.Click += new System.EventHandler(this.BPOPortionToolStripMenuItemClick);
+			// 
+			// invoicePortionToolStripMenuItem
+			// 
+			this.invoicePortionToolStripMenuItem.Name = "invoicePortionToolStripMenuItem";
+			this.invoicePortionToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.invoicePortionToolStripMenuItem.Text = "Invoice Portion";
+			this.invoicePortionToolStripMenuItem.Click += new System.EventHandler(this.InvoicePortionToolStripMenuItemClick);
+			// 
+			// toolStripSeparator9
+			// 
+			this.toolStripSeparator9.Name = "toolStripSeparator9";
+			this.toolStripSeparator9.Size = new System.Drawing.Size(160, 6);
+			// 
+			// summaryToolStripMenuItem
+			// 
+			this.summaryToolStripMenuItem.Name = "summaryToolStripMenuItem";
+			this.summaryToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.summaryToolStripMenuItem.Text = "Summary";
+			this.summaryToolStripMenuItem.Click += new System.EventHandler(this.SummaryToolStripMenuItemClick);
+			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -397,6 +444,18 @@ namespace Report_Convertor
 			this.aboutToolStripMenuItem1.Text = "About";
 			this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.AboutToolStripMenuItem1Click);
 			// 
+			// toolStripSeparator10
+			// 
+			this.toolStripSeparator10.Name = "toolStripSeparator10";
+			this.toolStripSeparator10.Size = new System.Drawing.Size(160, 6);
+			// 
+			// exportToolStripMenuItem
+			// 
+			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+			this.exportToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.exportToolStripMenuItem.Text = "Export";
+			this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportToolStripMenuItemClick);
+			// 
 			// frmContainer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -415,6 +474,13 @@ namespace Report_Convertor
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+		private System.Windows.Forms.ToolStripMenuItem summaryToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+		private System.Windows.Forms.ToolStripMenuItem invoicePortionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem bPOPortionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem nZPOToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem WeeklyActivityReportToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CockpitVsOTDMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
@@ -458,6 +524,5 @@ namespace Report_Convertor
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.MenuStrip menuStrip1;			
 		
-
 	}
 }

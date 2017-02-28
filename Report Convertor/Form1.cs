@@ -66,18 +66,18 @@ namespace Report_Convertor
 //			ReadAllInput();
 		}
 		
-		void ReadInput(string inputPath, string sql, string tableName)
+		public void ReadInput(string inputPath, string sql, string tableName)
 		{
 			string strCon;		
 			OleDbConnection conn;
 			
 			//if ( Office2010Exists() && inputPath.Contains("xlsx") )
-			if ( Office2010Exists() && inputPath.Contains("xlsx") )
+			if ( Utils.Office2010Exists() && inputPath.Contains("xlsx") )
 			{
 				strCon = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source=" + 
 										inputPath + ";Extended Properties=\"Excel 12.0; HDR=YES; IMEX=1\"";
 			}
-			else if ( Office2007Exists() && inputPath.Contains("xlsx") )
+			else if ( Utils.Office2007Exists() && inputPath.Contains("xlsx") )
 			{
 				strCon = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source=" + 
 										inputPath + ";Extended Properties=\"Excel 12.0; HDR=YES; IMEX=1\"";
@@ -124,10 +124,10 @@ namespace Report_Convertor
         	ds.Clear();
         	ds.Tables.Clear();
         	
-        	ModifyTypeGuessRows( false );
+        	Utils.ModifyTypeGuessRows( false );
         	
         	// Sales Orders SoldTo - mapping list for CockpitUploading
-        	string InputPath_Sales_Orders_SoldTo_mapping_list = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\Sales Orders SoldTo - mapping list");
+        	string InputPath_Sales_Orders_SoldTo_mapping_list = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\Sales Orders SoldTo - mapping list");
         	if ( (cbOTDReportChecked || cbWeeklyOTDAnalysisChecked) && File.Exists(InputPath_Sales_Orders_SoldTo_mapping_list))
             {                      
    		
@@ -136,7 +136,7 @@ namespace Report_Convertor
             }
         	
         	// Cares Product
-        	string InputPath_Cares_Product = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\Cares Product");
+        	string InputPath_Cares_Product = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\Cares Product");
         	if ( (cbOTDReportChecked || cbWeeklyOTDAnalysisChecked) && File.Exists(InputPath_Cares_Product))
             {                      
    		
@@ -145,8 +145,8 @@ namespace Report_Convertor
             }
         	
         	// Input1TL9000
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input1-TL9000");
-        	string InputPath_IB_ALL_INDO_14022013 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\IB_ALL_INDO_14022013");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input1-TL9000");
+        	string InputPath_IB_ALL_INDO_14022013 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\IB_ALL_INDO_14022013");
         	if (cbOTDReportChecked && File.Exists(InputPath) && File.Exists(InputPath_IB_ALL_INDO_14022013))
             {                      
             	sql = "select * from [Sheet1$]";
@@ -166,7 +166,7 @@ namespace Report_Convertor
         	
 			
 			//Input2TWClose
-			InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input2-TW-Close");
+			InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input2-TW-Close");
         	if (cbOTDReportChecked && File.Exists(InputPath))
             { 
 				sql = "select * from [Taiwan Sample$]";
@@ -182,7 +182,7 @@ namespace Report_Convertor
         	}
 			
 			//Input3TWOpen
-			InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input3-TW-Open");
+			InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input3-TW-Open");
 			if (cbOTDReportChecked && File.Exists(InputPath))
             { 
         		sql = "select * from [Taiwan Sample$]";
@@ -198,7 +198,7 @@ namespace Report_Convertor
 			}
 			
 			//Input4KOREA
-			InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input4-KOREA");
+			InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input4-KOREA");
 			if (cbOTDReportChecked && File.Exists(InputPath))
             { 
         		sql = "select * from [Sheet1$]";
@@ -214,7 +214,7 @@ namespace Report_Convertor
 			}
 			
 			//Input5NZ
-			InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input5-NZ");
+			InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OTD\\Input5-NZ");
 			if (cbOTDReportChecked && File.Exists(InputPath))
             { 
            		sql = "select * from [Promised List$]";
@@ -230,7 +230,7 @@ namespace Report_Convertor
 			}
         	
         	//Input6NonDesp        		
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\NonDesp\\Input6-NonDesp");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\NonDesp\\Input6-NonDesp");
         	if (cbNonDespReportChecked && File.Exists(InputPath))
             { 
         		sql = "select * from [Sheet1$]";
@@ -246,7 +246,7 @@ namespace Report_Convertor
         	}
         	
         	//Input7OpenOrderOnelog        		
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\Input7-OpenOrderOnelog");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\Input7-OpenOrderOnelog");
         	if (cbOpenOrderReportChecked && File.Exists(InputPath))
             { 
         		sql = "select * from [Sheet1$]";
@@ -262,7 +262,7 @@ namespace Report_Convertor
         	}
         	
         	//Input8OpenOrderOnelog        		
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\Input8-NZ");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\Input8-NZ");
         	if (cbOpenOrderReportChecked && File.Exists(InputPath))
             { 
         		sql = "select * from [Open Order$]";
@@ -278,9 +278,9 @@ namespace Report_Convertor
         	}
         	
         	//OpenOrdereSparesNew       		
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\OpenOrder-eSparesNew");
-        	string InputPath19 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\eSparesNew - Country Code List"); 
-			string InputPath20 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\OpenOrder-eSparesTW");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\OpenOrder-eSparesNew");
+        	string InputPath19 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\eSparesNew - Country Code List"); 
+			string InputPath20 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\OpenOrder-eSparesTW");
 				
         	if (cbOpenOrderReportChecked &&
         	    File.Exists(InputPath19) &&
@@ -340,7 +340,7 @@ namespace Report_Convertor
         	}
         	
         	//OpenLogReport_Excluding_List
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\OpenLogReport_Excluding_List");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\OpenOrder\\OpenLogReport_Excluding_List");
         	if (cbOpenOrderReportChecked && File.Exists(InputPath) && (Input8OpenOrderNonOnelogExist || Input7OpenOrderOnelogExist) )
             { 
         		sql = "select * from [RMA_Cancelled_List$]";
@@ -349,7 +349,7 @@ namespace Report_Convertor
         	
         	
         	//Input9MonthlyOTD    		
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\MonthlyOTDAnalysis\\MonthlyOTD");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\MonthlyOTDAnalysis\\MonthlyOTD");
         	if (cbMonthlyOTDAnalysisChecked && File.Exists(InputPath))
             { 
         		sql = "select * from [OTD$]";
@@ -366,7 +366,7 @@ namespace Report_Convertor
         	}
         	
         	//MonthlyOTDKeyCustomerList
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\MonthlyOTDAnalysis\\Monthly OTD-top 10 customer_ list");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\MonthlyOTDAnalysis\\Monthly OTD-top 10 customer_ list");
         	if (cbMonthlyOTDAnalysisChecked && File.Exists(InputPath) && Input9MonthlyOTDExist)
             { 
         		sql = "select * from [Sheet1$]";
@@ -374,7 +374,7 @@ namespace Report_Convertor
         	}
         	
         	//MonthlyOTDTWCustomerNameTranslation
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\MonthlyOTDAnalysis\\Taiwan customer name_ translation");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\MonthlyOTDAnalysis\\Taiwan customer name_ translation");
         	if (cbMonthlyOTDAnalysisChecked &&File.Exists(InputPath) && Input9MonthlyOTDExist)
             { 
         		sql = "select * from [Sheet1$]";
@@ -382,7 +382,7 @@ namespace Report_Convertor
         	}
         	
         	//WeeklyOTD    		
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\WeeklyOTDAnalysis\\WeeklyOTD");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\WeeklyOTDAnalysis\\WeeklyOTD");
         	if (cbWeeklyOTDAnalysisChecked && File.Exists(InputPath))
             { 
         		sql = "select * from [OTD$]";
@@ -398,7 +398,7 @@ namespace Report_Convertor
         	}
         	
         	//WeeklyOTDKeyCustomerList
-        	InputPath = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\WeeklyOTDAnalysis\\Weekly OTD-key customer list");
+        	InputPath = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\WeeklyOTDAnalysis\\Weekly OTD-key customer list");
         	if (cbWeeklyOTDAnalysisChecked && File.Exists(InputPath) && WeeklyOTDExist)
             { 
         		sql = "select * from [Sheet1$]";
@@ -408,24 +408,24 @@ namespace Report_Convertor
         	//MonthlyActuallyClosedRMA
         	if (cbClosedRMAReportChecked)
         	{
-        		string InputPath1 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-ASB");
-        		string InputPath2 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-Citadel Report");
-				string InputPath3 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-eSpares TW");
-				string InputPath4 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-NZ");
-				string InputPath5 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-Ormes");
-				string InputPath6 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO EMEA");
-        		string InputPath7 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO AMERICAS NAR");
-				string InputPath8 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO APAC CHINA QD");
-				string InputPath9 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO APAC INDIA");
-				string InputPath10 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO China (SHA)");
-				string InputPath11 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Excluding List");
-				string InputPath12 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Stinger product code mapping list");
-				string InputPath13 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\APAC Country Code List");
-				string InputPath14 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Repairer To SubGroup Mapping List - NZ");
-				string InputPath15 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Repairer To SubGroup Mapping List - TW");
-				string InputPath16 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-eSpares_New"); 
-				string InputPath17 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Repairer To SubGroup Mapping List - eSpares New"); 
-				string InputPath18 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\eSparesNew - Country Code List"); 
+        		string InputPath1 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-ASB");
+        		string InputPath2 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-Citadel Report");
+				string InputPath3 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-eSpares TW");
+				string InputPath4 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-NZ");
+				string InputPath5 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-Ormes");
+				string InputPath6 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO EMEA");
+        		string InputPath7 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO AMERICAS NAR");
+				string InputPath8 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO APAC CHINA QD");
+				string InputPath9 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO APAC INDIA");
+				string InputPath10 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\VC Catalogue - RESO China (SHA)");
+				string InputPath11 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Excluding List");
+				string InputPath12 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Stinger product code mapping list");
+				string InputPath13 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\APAC Country Code List");
+				string InputPath14 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Repairer To SubGroup Mapping List - NZ");
+				string InputPath15 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Repairer To SubGroup Mapping List - TW");
+				string InputPath16 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\ClosedRMA-eSpares_New"); 
+				string InputPath17 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ClosedRMA\\Ref\\Repairer To SubGroup Mapping List - eSpares New"); 
+				string InputPath18 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\eSparesNew - Country Code List"); 
 
         		if (File.Exists(InputPath1) &&
 				    File.Exists(InputPath2) &&
@@ -586,16 +586,16 @@ namespace Report_Convertor
         	//ActivityYTD
         	if (cbActivityYTDChecked)
         	{
-        		string InputPath1 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\KOREA-YTD-Base on RMA creation date");
-        		string InputPath2 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\KOREA-YTD-Base on shipping date");
-				string InputPath3 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\NZ-YTD");
-				string InputPath4 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\TW-IC-YTD");
-				string InputPath5 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\OTD-Onelog-TWOnly-YTD");
-				string InputPath6 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\CitadelShipped-YTD");
-				string InputPath7 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\CitadelReceived-YTD");
-				string InputPath8 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\Ticket_Type_Sla ALu_for Citadel shipped");
-				string InputPath9 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\eSparesNew");
-				string InputPath10 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\eSparesNew - Country Code List"); 
+        		string InputPath1 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\KOREA-YTD-Base on RMA creation date");
+        		string InputPath2 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\KOREA-YTD-Base on shipping date");
+				string InputPath3 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\NZ-YTD");
+				string InputPath4 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\TW-IC-YTD");
+				string InputPath5 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\OTD-Onelog-TWOnly-YTD");
+				string InputPath6 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\CitadelShipped-YTD");
+				string InputPath7 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\CitadelReceived-YTD");
+				string InputPath8 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\Ticket_Type_Sla ALu_for Citadel shipped");
+				string InputPath9 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\eSparesNew");
+				string InputPath10 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\Common\\eSparesNew - Country Code List"); 
 
 
         		if (File.Exists(InputPath1) &&
@@ -666,7 +666,7 @@ namespace Report_Convertor
         	//Activity YTD Based On OTD
         	if (cbActivityYTDChecked)
         	{
-        		string InputPath1 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\OTD");
+        		string InputPath1 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\OTD");
 								
         		if (File.Exists(InputPath1))
            		{ 	
@@ -693,7 +693,7 @@ namespace Report_Convertor
         	//Weekly Activity YTD Based On OTD
         	if (cbActivityYTDChecked)
         	{
-        		string InputPath1 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\WeeklyOTD");
+        		string InputPath1 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\ActivityYTDReport\\WeeklyOTD");
 								
         		if (File.Exists(InputPath1))
            		{ 	
@@ -716,9 +716,9 @@ namespace Report_Convertor
         	//Cockpit VS OTD
         	if (cbOTDvsCockpitChecked)
         	{
-        		string InputPath1 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\CockpitVsOTD\\YTD OTD Report");
-				string InputPath2 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\CockpitVsOTD\\AP AE Cockpit");
-				string InputPath3 = SetInputPath(System.Environment.CurrentDirectory + "\\Data\\CockpitVsOTD\\AP RFS Cockpit");
+        		string InputPath1 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\CockpitVsOTD\\YTD OTD Report");
+				string InputPath2 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\CockpitVsOTD\\AP AE Cockpit");
+				string InputPath3 = Utils.SetInputPath(System.Environment.CurrentDirectory + "\\Data\\CockpitVsOTD\\AP RFS Cockpit");
 				
         		if (File.Exists(InputPath1) &&
 				    File.Exists(InputPath2) &&
@@ -753,141 +753,5 @@ namespace Report_Convertor
         	}
 		}
 				
-		private string SetInputPath(string inputPath)
-		{
-			string ret = "";
-			if (File.Exists(inputPath + ".xls"))
-			{
-				ret = inputPath + ".xls";
-			}
-			else
-			{
-				ret = inputPath + ".xlsx";
-			}
-			
-			return ret;
-		}
-		
-		private bool Office2003Exists()
-        {
-            bool exist = false;
-            RegistryKey rk = Registry.LocalMachine;
-            RegistryKey akey = rk.OpenSubKey(@"SOFTWARE\\Microsoft\\Office\\11.0\\Word\\InstallRoot\\");
-            RegistryKey akeytwo = rk.OpenSubKey(@"SOFTWARE\\Microsoft\\Office\\12.0\\Word\\InstallRoot\\");
-            //检查本机是否安装Office2003
-            if (akey != null)
-            {
-                string file03 = akey.GetValue("Path").ToString();
-                if (File.Exists(file03 + "Excel.exe"))
-                {
-                    exist = true;
-                }
-            }
-            
-            return exist;
-		}
-		
-		private bool Office2007Exists()
-        {
-            bool exist = false;
-            RegistryKey rk = Registry.LocalMachine;
-            RegistryKey akey = rk.OpenSubKey(@"SOFTWARE\\Microsoft\\Office\\12.0\\Word\\InstallRoot\\");
-            //检查本机是否安装Office2007
-            if (akey != null)
-            {
-                string file07 = akey.GetValue("Path").ToString();
-                if (File.Exists(file07 + "Excel.exe"))
-                {
-                    exist = true;
-                }
-            }
-            
-            return exist;
-        }
-		
-		private bool Office2010Exists()
-        {
-            bool exist = false;
-            RegistryKey rk = Registry.LocalMachine;
-            RegistryKey akey = rk.OpenSubKey(@"SOFTWARE\\Microsoft\\Office\\14.0\\Word\\InstallRoot\\");
-            //检查本机是否安装Office2007
-            if (akey != null)
-            {
-                string file10 = akey.GetValue("Path").ToString();
-                if (File.Exists(file10 + "Excel.exe"))
-                {
-                    exist = true;
-                }
-            }
-            
-            return exist;
-        }
-		
-		/// <summary>
-		/// 修改注册表TypeGuessRows的值
-		/// 
-		/// ADO.NET读取Excel表格时，OLEDB（Excel 2000-2003一般是是Jet 4.0，Excel 2007是ACE 12.0，
-		/// 即Access Connectivity Engine，ACE也可以用来访问Excel 2000-2003）。会默认扫面Sheet中的
-		/// 前几行来决定数据类型，这个行数是由注册表中
-		/// Excel 2000-2003 : HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Jet\4.0\Engines\Excel
-		/// Excel 2007 : HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Office\12.0\Access Connectivity Engine\Engines\Excel
-		/// 中的TypeGuessRows值来控制，默认是8。 
-		/// 在执行Excel读取之前将TypeGuessRows值设为0，那样Jet就会扫描最多16384行。
-		/// 当然，如果文件太大的话，这里就有效率问题了。
-		/// 采用这个方案一般还要在Excel文件连接字符串中的Extended Properties加入IMEX=1
-		/// 当 IMEX=0 时为“汇出模式”，这个模式开启的 Excel 档案只能用来做“写入”用途。
-		/// 当 IMEX=1 时为“汇入模式”，这个模式开启的 Excel 档案只能用来做“读取”用途。
-		/// 当 IMEX=2 时为“连結模式”，这个模式开启的 Excel 档案可同时支援“读取”与“写入”用途。
-		/// </summary>
-		/// <param name="setDefault">为true表示设为默认值8，为flase表示设为0</param>
-		/// <returns></returns>
-		private bool ModifyTypeGuessRows(bool setDefault)
-		{
-		    int toSetValue = 0;
-			string JetKeyRoot = "SOFTWARE\\Microsoft\\Jet\\4.0\\Engines\\Excel";
-			string ACEKeyRoot = "SOFTWARE\\Microsoft\\Office\\12.0\\Access Connectivity Engine\\Engines\\Excel";
-			string ACEKeyRoot10 = "SOFTWARE\\Microsoft\\Office\\14.0\\Access Connectivity Engine\\Engines\\Excel";
-	  		
-			if(setDefault)
-		    {
-		        toSetValue = 8;
-		    }
-		  
-		    try
-		    {
-		    	if ( Office2003Exists() )
-		    	{
-		        	RegistryKey JetRegKey = Registry.LocalMachine.OpenSubKey(JetKeyRoot, true);
-		        	JetRegKey.SetValue("TypeGuessRows", Convert.ToString(toSetValue, 16), RegistryValueKind.DWord);
-		        	JetRegKey.Close();
-		    	}
-		    	if ( Office2007Exists() )
-		    	{
-		       		RegistryKey ACERegKey = Registry.LocalMachine.OpenSubKey(ACEKeyRoot, true);
-		        	ACERegKey.SetValue("TypeGuessRows", Convert.ToString(toSetValue, 16), RegistryValueKind.DWord);
-		        	ACERegKey.Close();
-		    	}		   
-		    	if ( Office2010Exists() )
-		    	{
-		       		RegistryKey ACERegKey = Registry.LocalMachine.OpenSubKey(ACEKeyRoot10, true);
-		        	ACERegKey.SetValue("TypeGuessRows", Convert.ToString(toSetValue, 16), RegistryValueKind.DWord);
-		        	ACERegKey.Close();
-		    	}	
-		    }
-		    catch(Exception ex)
-		    {
-//		        MessageBox.Show("Registry update failed："+ ex.Message);
-		        return false;
-		    }
-		    
-		    return true;
-		}
-		
-//		private void SetNullText(DataGrid dg)
-//		{
-//    		DataGridColumnStyle myGridColumn;
-//    		myGridColumn = dg.TableStyles[0].GridColumnStyles[0];
-//    		myGridColumn.NullText = "";
-//		}
 	}
 }
