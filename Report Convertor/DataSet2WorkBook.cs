@@ -287,8 +287,10 @@ namespace Report_Convertor
     //
     //创建数据连接
     //
-    OleDbConnection objConn = new OleDbConnection(
-     "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="+ this.mFilePath +";Extended Properties=Excel 8.0;");
+//    OleDbConnection objConn = new OleDbConnection(
+//     "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="+ this.mFilePath +";Extended Properties=Excel 8.0;");
+	OleDbConnection objConn = new OleDbConnection(
+     "Provider=Microsoft.Jet.OLEDB.12.0;Data Source="+ this.mFilePath +";Extended Properties=Excel 12.0;");
       
     //
     //获取工作簿中的表

@@ -46,8 +46,10 @@ namespace Report_Convertor
 		
 		void ReadOutput(string outputPath, string sql, string tableName)
 		{			
-			strCon = " Provider = Microsoft.Jet.OLEDB.4.0 ; Data Source =" +
-										outputPath + ";Extended Properties=Excel 8.0";
+//			strCon = " Provider = Microsoft.Jet.OLEDB.4.0 ; Data Source =" +
+//										outputPath + ";Extended Properties=Excel 8.0";
+			strCon = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source=" + 
+										outputPath + ";Extended Properties=\"Excel 12.0; HDR=YES; IMEX=1\"";
 			conn = new OleDbConnection(strCon);
         	try
         	{
@@ -81,7 +83,7 @@ namespace Report_Convertor
         	string sql;
         	
         	// OpenLog
-        	OutputPath = System.Environment.CurrentDirectory + "\\Data\\Output_Template.xls";
+        	OutputPath = System.Environment.CurrentDirectory + "\\Data\\Output_Template.xlsx";
         	
         	if (!(File.Exists(OutputPath)))
             { 

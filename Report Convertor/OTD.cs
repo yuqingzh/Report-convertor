@@ -788,7 +788,8 @@ namespace Report_Convertor
 			
 			foreach (DataRow srcDr in srcDs.Tables["Input5NZ"].Rows)
 			{
-			  if (this.CustomerNameFilter4TW(srcDr["Sales Orders - ShipTo Customer Name"].ToString()) == true)
+			  //if (this.CustomerNameFilter4TW(srcDr["Sales Orders - ShipTo Customer Name"].ToString()) == true)
+			  if (this.CustomerNameFilter4TW(srcDr["Customer Name"].ToString()) == true)
 			  {
 				DataRow dr = destDs.Tables["OTD"].NewRow();
 				

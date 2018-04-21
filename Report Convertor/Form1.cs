@@ -72,6 +72,11 @@ namespace Report_Convertor
 			OleDbConnection conn;
 			
 			//if ( Office2010Exists() && inputPath.Contains("xlsx") )
+//			if ( Utils.Office2016Exists() && inputPath.Contains("xlsx") )
+//			{
+//				strCon = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source=" + 
+//										inputPath + ";Extended Properties=\"Excel 12.0; HDR=YES; IMEX=1\"";
+//			}
 			if ( Utils.Office2010Exists() && inputPath.Contains("xlsx") )
 			{
 				strCon = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source=" + 
@@ -84,8 +89,10 @@ namespace Report_Convertor
 			}
 			else
 			{
-				strCon = "Provider = Microsoft.Jet.OLEDB.4.0; Data Source =" +
-										inputPath + ";Extended Properties=\"Excel 8.0; HDR=Yes; IMEX=1\"";
+//				strCon = "Provider = Microsoft.Jet.OLEDB.4.0; Data Source =" +
+//										inputPath + ";Extended Properties=\"Excel 8.0; HDR=Yes; IMEX=1\"";
+				strCon = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source=" + 
+										inputPath + ";Extended Properties=\"Excel 12.0; HDR=YES; IMEX=1\"";
 			}		
 			
 			

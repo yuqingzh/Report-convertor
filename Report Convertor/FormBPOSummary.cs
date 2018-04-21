@@ -57,8 +57,10 @@ namespace Report_Convertor
 			}
 			else
 			{
-				strCon = "Provider = Microsoft.Jet.OLEDB.4.0; Data Source =" +
-										inputPath + ";Extended Properties=\"Excel 8.0; HDR=Yes; IMEX=10\"";
+//				strCon = "Provider = Microsoft.Jet.OLEDB.4.0; Data Source =" +
+//										inputPath + ";Extended Properties=\"Excel 8.0; HDR=Yes; IMEX=10\"";
+				strCon = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source=" + 
+										inputPath + ";Extended Properties=\"Excel 12.0; HDR=YES; IMEX=10\"";
 			}	
 			
 			/// 

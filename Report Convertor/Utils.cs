@@ -101,6 +101,23 @@ namespace Report_Convertor
             
             return exist;
         }
+		public static bool Office2016Exists()
+        {
+            bool exist = false;
+            RegistryKey rk = Registry.LocalMachine;
+            RegistryKey akey = rk.OpenSubKey(@"SOFTWARE\\Microsoft\\Office\\15.0\\Word\\InstallRoot\\");
+            //检查本机是否安装Office2007
+            if (akey != null)
+            {
+                string file16 = akey.GetValue("Path").ToString();
+                if (File.Exists(file16 + "Excel.exe"))
+                {
+                    exist = true;
+                }
+            }
+            
+            return exist;
+        }
 		
 		/// <summary>
 		/// 修改注册表TypeGuessRows的值
@@ -126,6 +143,7 @@ namespace Report_Convertor
 			string JetKeyRoot = "SOFTWARE\\Microsoft\\Jet\\4.0\\Engines\\Excel";
 			string ACEKeyRoot = "SOFTWARE\\Microsoft\\Office\\12.0\\Access Connectivity Engine\\Engines\\Excel";
 			string ACEKeyRoot10 = "SOFTWARE\\Microsoft\\Office\\14.0\\Access Connectivity Engine\\Engines\\Excel";
+			string ACEKeyRoot16 = "SOFTWARE\\Microsoft\\Office\\15.0\\Access Connectivity Engine\\Engines\\Excel";
 	  		
 			if(setDefault)
 		    {
@@ -149,6 +167,12 @@ namespace Report_Convertor
 		    	if ( Office2010Exists() )
 		    	{
 		       		RegistryKey ACERegKey = Registry.LocalMachine.OpenSubKey(ACEKeyRoot10, true);
+		        	ACERegKey.SetValue("TypeGuessRows", Convert.ToString(toSetValue, 16), RegistryValueKind.DWord);
+		        	ACERegKey.Close();
+		    	}	
+		    	if ( Office2016Exists() )
+		    	{
+		       		RegistryKey ACERegKey = Registry.LocalMachine.OpenSubKey(ACEKeyRoot16, true);
 		        	ACERegKey.SetValue("TypeGuessRows", Convert.ToString(toSetValue, 16), RegistryValueKind.DWord);
 		        	ACERegKey.Close();
 		    	}	

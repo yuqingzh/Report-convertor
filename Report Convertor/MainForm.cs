@@ -110,7 +110,7 @@ namespace Report_Convertor
 			}
 			else
 			{
-				convertInput4KOREAToolStripMenuItem.Enabled = true;
+				//convertInput4KOREAToolStripMenuItem.Enabled = true;
 			}
 			
 			if (frmInput.Input5NZExist == false)
@@ -119,7 +119,7 @@ namespace Report_Convertor
 			}
 			else
 			{
-				convertInput5NAToolStripMenuItem.Enabled = true;
+				//convertInput5NAToolStripMenuItem.Enabled = true;
 			}
 			
 			if (frmInput.Input6NonDespExist == false)
@@ -139,7 +139,7 @@ namespace Report_Convertor
 				toolStripMenuItem5.Enabled = false;
 			}
 			else{
-				toolStripMenuItem5.Enabled = true;
+				//toolStripMenuItem5.Enabled = true;
 			}
 			
 			if ( frmInput.Input4KOREAExist == false &&
@@ -287,7 +287,7 @@ namespace Report_Convertor
 //				Input.tcInput.TabPages.Add(Input.tpInput1TL9000);
 				Input.tcInput.TabPages.Add(Input.tpInput2TWClose);
 				Input.tcInput.TabPages.Add(Input.tpInput3TWOpen);
-//				Input.tcInput.TabPages.Add(Input.tpInput4KOREA);
+				Input.tcInput.TabPages.Add(Input.tpInput4KOREA);
 				Input.tcInput.TabPages.Add(Input.tpInput5NZ);
 				
 //				Output.tcOutput.TabPages.Add(Output.tpOpenLog);
@@ -476,12 +476,12 @@ namespace Report_Convertor
 		
 		void ConvertInput5NAToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			frmOutput.ds.Clear();
-			
-			NonOnelog nonOnelog = new NonOnelog();
-        	nonOnelog.SetValues();
-        	Output.Focus();
-			Output.tcOutput.SelectTab(Output.tpNonOnelog);
+//			frmOutput.ds.Clear();
+//			
+//			NonOnelog nonOnelog = new NonOnelog();
+//        	nonOnelog.SetValues();
+//        	Output.Focus();
+//			Output.tcOutput.SelectTab(Output.tpNonOnelog);
 		}
 		
 		void ConvertOTDToolStripMenuItemClick(object sender, EventArgs e)
@@ -490,6 +490,13 @@ namespace Report_Convertor
 			
 			this.Cursor = Cursors.WaitCursor;
 			OTD otd = new OTD();
+				
+			if (frmInput.Input4KOREAExist)
+			{				
+				otd.SetValues4Input4KOREA();
+				Output.Focus();
+				Output.tcOutput.SelectTab(Output.tpOTD);
+			}     
 			if (frmInput.Input5NZExist)
 			{				
 				otd.SetValues4NZ();
@@ -574,8 +581,11 @@ namespace Report_Convertor
 		
 		void ToolStripMenuItem6Click(object sender, EventArgs e)
 		{
-			string strCon = " Provider = Microsoft.Jet.OLEDB.4.0 ; Data Source =" +
-										frmOutput.OutputPath + ";Extended Properties=\"Excel 8.0; HDR=Yes; IMEX=2\"";
+//			string strCon = " Provider = Microsoft.Jet.OLEDB.4.0 ; Data Source =" +
+//										frmOutput.OutputPath + ";Extended Properties=\"Excel 8.0; HDR=Yes; IMEX=2\"";
+			string strCon = " Provider = Microsoft.Jet.OLEDB.12.0 ; Data Source =" +
+										frmOutput.OutputPath + ";Extended Properties=\"Excel 12.0; HDR=Yes; IMEX=10\"";
+
 			frmOutput.conn = new OleDbConnection(strCon);
         	try
         	{

@@ -79,11 +79,11 @@ namespace Report_Convertor
 			this.invoicePortionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.summaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -199,6 +199,7 @@ namespace Report_Convertor
 			// 
 			// convertInput1TL9000ToolStripMenuItem
 			// 
+			this.convertInput1TL9000ToolStripMenuItem.Enabled = false;
 			this.convertInput1TL9000ToolStripMenuItem.Name = "convertInput1TL9000ToolStripMenuItem";
 			this.convertInput1TL9000ToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
 			this.convertInput1TL9000ToolStripMenuItem.Text = "Convert Input1TL9000";
@@ -207,6 +208,7 @@ namespace Report_Convertor
 			// 
 			// convertInput2TWCloseToolStripMenuItem
 			// 
+			this.convertInput2TWCloseToolStripMenuItem.Enabled = false;
 			this.convertInput2TWCloseToolStripMenuItem.Name = "convertInput2TWCloseToolStripMenuItem";
 			this.convertInput2TWCloseToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
 			this.convertInput2TWCloseToolStripMenuItem.Text = "Convert Input2TWClose";
@@ -214,6 +216,7 @@ namespace Report_Convertor
 			// 
 			// convertInput3TWOpenToolStripMenuItem
 			// 
+			this.convertInput3TWOpenToolStripMenuItem.Enabled = false;
 			this.convertInput3TWOpenToolStripMenuItem.Name = "convertInput3TWOpenToolStripMenuItem";
 			this.convertInput3TWOpenToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
 			this.convertInput3TWOpenToolStripMenuItem.Text = "Convert Input3TWOpen";
@@ -221,14 +224,15 @@ namespace Report_Convertor
 			// 
 			// convertInput4KOREAToolStripMenuItem
 			// 
+			this.convertInput4KOREAToolStripMenuItem.Enabled = false;
 			this.convertInput4KOREAToolStripMenuItem.Name = "convertInput4KOREAToolStripMenuItem";
 			this.convertInput4KOREAToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
 			this.convertInput4KOREAToolStripMenuItem.Text = "Convert Input4KOREA";
-			this.convertInput4KOREAToolStripMenuItem.Visible = false;
 			this.convertInput4KOREAToolStripMenuItem.Click += new System.EventHandler(this.ConvertInput4KOREAToolStripMenuItemClick);
 			// 
 			// convertInput5NAToolStripMenuItem
 			// 
+			this.convertInput5NAToolStripMenuItem.Enabled = false;
 			this.convertInput5NAToolStripMenuItem.Name = "convertInput5NAToolStripMenuItem";
 			this.convertInput5NAToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
 			this.convertInput5NAToolStripMenuItem.Text = "Convert Input5NZ";
@@ -236,6 +240,7 @@ namespace Report_Convertor
 			// 
 			// toolStripMenuItem5
 			// 
+			this.toolStripMenuItem5.Enabled = false;
 			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
 			this.toolStripMenuItem5.Size = new System.Drawing.Size(297, 22);
 			this.toolStripMenuItem5.Text = "Convert OTD w/o KOREA";
@@ -421,6 +426,18 @@ namespace Report_Convertor
 			this.summaryToolStripMenuItem.Text = "Summary";
 			this.summaryToolStripMenuItem.Click += new System.EventHandler(this.SummaryToolStripMenuItemClick);
 			// 
+			// toolStripSeparator10
+			// 
+			this.toolStripSeparator10.Name = "toolStripSeparator10";
+			this.toolStripSeparator10.Size = new System.Drawing.Size(160, 6);
+			// 
+			// exportToolStripMenuItem
+			// 
+			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+			this.exportToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.exportToolStripMenuItem.Text = "Export";
+			this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportToolStripMenuItemClick);
+			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -443,18 +460,6 @@ namespace Report_Convertor
 			this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(111, 22);
 			this.aboutToolStripMenuItem1.Text = "About";
 			this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.AboutToolStripMenuItem1Click);
-			// 
-			// toolStripSeparator10
-			// 
-			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(160, 6);
-			// 
-			// exportToolStripMenuItem
-			// 
-			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-			this.exportToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-			this.exportToolStripMenuItem.Text = "Export";
-			this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportToolStripMenuItemClick);
 			// 
 			// frmContainer
 			// 
